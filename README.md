@@ -2,4 +2,4 @@
 
 Project to collect housing data for machine learning engineer course.
 
-## Current Version 0.3.0
+## Current Version 0.4.0
