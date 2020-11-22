@@ -30,6 +30,13 @@ class ApartmentsSpider(scrapy.Spider):
         'Balcón/Terraza': {'name': 'balcony'},
         'Niveles': {'name': 'levels'},
         'Precio/M² de construcción': {'name': 'price_x_sq_meter'},
+    }
+
+    custom_settings = {
+        "DOWNLOADER_MIDDLEWARES": {
+            #"pty_housing.middlewares.RotateProxyMiddleware": 300,
+            "pty_housing.middlewares.RotateAgentMiddleware": 301,
+        },
 
     }
 
@@ -52,6 +59,7 @@ class ApartmentsSpider(scrapy.Spider):
         xpath = "//li/span[@class='info-name']"
         infos = response.xpath(xpath)
         housing_data = dict()
+        housing_data['user_agent'] = response.request.headers['User-Agent']
         match = self.regexp.match(current_url)
 
         if match:

@@ -335,6 +335,6 @@ alpha_clinic/media/
 
 output/
 
-
+.scrapy/httpcache/
 
 chrome_driver_86/

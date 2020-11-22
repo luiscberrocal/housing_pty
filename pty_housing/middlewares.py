@@ -2,11 +2,18 @@
 #
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+import logging
+import random
+import time
 
 from scrapy import signals
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
+from pty_housing import settings
+
 
 # useful for handling different item types with a single interface
-from itemadapter import is_item, ItemAdapter
 
 
 class PtyHousingSpiderMiddleware:
@@ -101,3 +108,56 @@ class PtyHousingDownloaderMiddleware:
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
+
+
+class RotateProxyMiddleware(object):
+
+    def process_request(self, request, spider):
+        # webdriver setting
+        options = Options()
+        options.add_argument('--headless')
+
+        # webdriver request
+        driver = webdriver.Chrome(executable_path=settings.CHROME_DRIVER_PATH,
+                                  chrome_options=options)
+        driver.get("http://free-proxy-list.net")
+        time.sleep(1)
+
+        # real time random select free proxy from website
+        row = int(random.randint(1, 20))
+
+        ip_xpath = "//tbody/tr[{row}]/td[1]".format(row=row)
+        ip = driver.find_element_by_xpath(ip_xpath).text
+
+        port_xpath = "//tbody/tr[{row}]/td[2]".format(row=row)
+        port = driver.find_element_by_xpath(port_xpath).text
+
+        proxy = "{ip}:{port}".format(ip=ip, port=port)
+        logging.info("Hold Proxy {proxy}".format(proxy=proxy))
+        driver.quit()
+
+        # hold proxy
+        request.meta["proxy"] = proxy
+
+
+class RotateAgentMiddleware(object):
+
+    def process_request(self, request, spider):
+        # webdriver setting
+        options = Options()
+        options.add_argument('--headless')
+
+        # webdriver request
+        driver = webdriver.Chrome(executable_path=settings.CHROME_DRIVER_PATH,
+                                  chrome_options=options)
+        driver.get("https://deviceatlas.com/blog/list-of-user-agent-strings")
+        time.sleep(1)
+
+        # real time random select user agent from website
+        agent_list = driver.find_elements_by_xpath("//td")
+        agent = (random.choice(agent_list)).text
+        logging.info("Hold Agent {agent}".format(agent=agent))
+        driver.quit()
+
+        # hold user agent
+        request.headers["User-Agent"] = agent
