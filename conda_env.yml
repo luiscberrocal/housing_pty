@@ -154,5 +154,6 @@ dependencies:
     - shub==2.12.0
     - tqdm==4.11.2
     - websocket-client==0.57.0
+    - rpa==1.43.0
 prefix: /Users/luiscberrocal/anaconda3/envs/pty_housing_env
 
