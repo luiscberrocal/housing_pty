@@ -48,7 +48,17 @@ def change_password(username, new_password):
 
     submit_elem = '//input[@type="submit"]'
     r.click(submit_elem)
+
+    success_elem = '//ul[@class="messagelist"]/li[@class="success"]'
+    txt = r.read(success_elem)
     print('CLICK')
+    return txt
+
+def logout_from_admin():
+    logout_elem ='//a[text()="Log out"]'
+    r.click(logout_elem)
+
+
 
 
 
@@ -69,7 +79,9 @@ if __name__ == '__main__':
     ## CHANGE PASSWORD
     r.wait(2)
 
-    change_password(user, pwd)
-
+    success = change_password(user, pwd)
+    print(success)
+    ## LOGOUT FROM ADMIN
+    logout_from_admin()
     r.wait(30)
     r.close()
