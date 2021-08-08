@@ -58,7 +58,8 @@ def logout_from_admin():
     logout_elem ='//a[text()="Log out"]'
     r.click(logout_elem)
 
-
+def app_login(username, password, login_url):
+    r.url(login_url)
 
 
 
@@ -83,5 +84,10 @@ if __name__ == '__main__':
     print(success)
     ## LOGOUT FROM ADMIN
     logout_from_admin()
+
+    ## LOGIN TO THE APP
+    url = cred['base_url'] + 'accounts/login/'
+    app_login(user, pwd, url)
+
     r.wait(30)
     r.close()
