@@ -338,3 +338,5 @@ output/
 .scrapy/httpcache/
 
 chrome_driver_86/
+
+.creds/
